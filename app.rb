@@ -1,5 +1,12 @@
 require "sinatra"
 require "sinatra/reloader"
+require "better_errors"
+require "binding_of_caller"
+
+# Need this configuration for better_errors
+use(BetterErrors::Middleware)
+BetterErrors.application_root = __dir__
+BetterErrors::Middleware.allow_ip!('0.0.0.0/0.0.0.0')
 
 get("/") do
   erb(:homepage)
@@ -51,4 +58,16 @@ get("/dice/5/4") do
   end
 
   erb(:five_four)
+end
+
+get ("/dynamic/50/6") do
+  @rolls = []
+
+  50.times do
+    die = rand (1..6)
+
+    @rolls.push(die)
+  end
+
+  erb(:flexible)
 end
